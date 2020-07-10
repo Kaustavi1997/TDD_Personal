@@ -1,4 +1,4 @@
-package cabInvoiceTest;
+package cabinvoiceTest;
 
-public class cabinvoiceTest {
+public class CabInvoiceGeneratorTest {
 }
