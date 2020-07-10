@@ -38,11 +38,11 @@ public class CabInvoiceGenerator {
         }
         return new InvoiceSummary(rides.length, totalFare);
     }
-    public void setUserSpecificInvoice(Ride[] userRides, String user, RideCategory premium) {
+    public void setUserSpecificInvoice(Ride[] userRides, String user) {
         invoiceSummaryMap.put(user, this.totalFareCalculator(userRides));
     }
 
-        public InvoiceSummary getUserInvoiceSummary(Ride[] userRides, String userID) {
+        public InvoiceSummary getUserInvoiceSummary(String userID) {
         return invoiceSummaryMap.get(userID);
     }
 }
