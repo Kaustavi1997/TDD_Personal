@@ -1,4 +1,4 @@
-package cabinvoice.service;
+package cabinvoice.model;
 
 public class InvoiceSummary {
     private final int numOfRides;
@@ -9,7 +9,6 @@ public class InvoiceSummary {
      * @param rides
      * @param totalFare
      */
-
     public InvoiceSummary(int rides, double totalFare) {
         this.numOfRides = rides;
         this.totalFare = totalFare;

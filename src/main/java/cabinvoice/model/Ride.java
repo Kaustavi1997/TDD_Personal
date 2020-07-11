@@ -1,4 +1,4 @@
-package cabinvoice.service;
+package cabinvoice.model;
 
 import cabinvoice.utility.RideCategory;
 
@@ -13,7 +13,6 @@ public class Ride {
      * @param time
      * @param category
      */
-
     public Ride(double distance, int time,RideCategory category) {
         this.distance = distance;
         this.time = time;
