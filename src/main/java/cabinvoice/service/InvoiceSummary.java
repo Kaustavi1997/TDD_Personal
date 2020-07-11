@@ -4,6 +4,11 @@ public class InvoiceSummary {
     private final int numOfRides;
     private final double totalFare;
     private final double averageFare;
+    /**
+     * initialized all the parameters.
+     * @param rides
+     * @param totalFare
+     */
 
     public InvoiceSummary(int rides, double totalFare) {
         this.numOfRides = rides;

@@ -8,14 +8,30 @@ public class CabInvoiceGenerator {
     private static int farePerMinuteNormal = 1 ;
     private static double minimumFare = 5.0;
     private Map<String, InvoiceSummary> invoiceSummaryMap;
+    /**
+     * Initialized the map.
+     */
     public CabInvoiceGenerator(){
         invoiceSummaryMap = new HashMap<>();;
     }
+    /**
+     * calculate the fare according to distance,time and ride category
+     * @param distance
+     * @param time
+     * @param category
+     * @return
+     */
+
     public double fareCalculator(double distance, int time, RideCategory category) {
         this.fareCategory(category);
         double fare = distance * CabInvoiceGenerator.farePerKilometer + time * farePerMinuteNormal;
         return Math.max(fare, minimumFare);
     }
+    /**
+     * taking all the parameters according to ride category using switch case.
+     * @param category
+     */
+
     private void fareCategory(RideCategory category) {
         switch (category) {
             case NORMAL:
@@ -30,6 +46,11 @@ public class CabInvoiceGenerator {
                 break;
         }
     }
+    /**
+     * calculation of total fare of the rides.
+     * @param rides
+     * @return
+     */
 
     public InvoiceSummary totalFareCalculator(Ride[] rides) {
         double totalFare = 0;
@@ -38,6 +59,11 @@ public class CabInvoiceGenerator {
         }
         return new InvoiceSummary(rides.length, totalFare);
     }
+    /**
+     * setter getter method for map
+     * @param userRides
+     * @param user
+     */
     public void setUserSpecificInvoice(Ride[] userRides, String user) {
         invoiceSummaryMap.put(user, this.totalFareCalculator(userRides));
     }
