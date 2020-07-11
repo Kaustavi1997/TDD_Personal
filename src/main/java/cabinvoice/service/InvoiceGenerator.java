@@ -1,14 +1,14 @@
 package cabinvoice.service;
+import cabinvoice.exception.InvoiceGeneratorException;
 import cabinvoice.model.InvoiceSummary;
 import cabinvoice.model.Ride;
 import cabinvoice.utility.RideCategory;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class InvoiceGenerator {
-    private static int farePerKilometer;
-    private static int farePerMinute;
-    private static double minimumFare;
     private Map<String, InvoiceSummary> invoiceSummaryMap;
     /**
      * Initialized the map.
@@ -25,27 +25,8 @@ public class InvoiceGenerator {
      */
 
     public double fareCalculator(double distance, int time, RideCategory category) {
-        this.fareCategory(category);
-        double fare = distance * InvoiceGenerator.farePerKilometer + time * farePerMinute;
-        return Math.max(fare, minimumFare);
-    }
-    /**
-     * details of ride according to ridecategory using switch case.
-     * @param category
-     */
-    private void fareCategory(RideCategory category) {
-        switch (category) {
-            case NORMAL:
-                farePerMinute = 1;
-                farePerKilometer = 10;
-                minimumFare = 5.0;
-                break;
-            case PREMIUM:
-                farePerKilometer = 15;
-                farePerMinute = 2;
-                minimumFare = 20.0;
-                break;
-        }
+        double fare = distance * category.farePerKilometer + time * category.farePerMinute;
+        return Math.max(fare, category.minimumFare);
     }
     /**
      * calculation of total fare of the rides taken by user.
@@ -53,29 +34,44 @@ public class InvoiceGenerator {
      * @return
      */
     public InvoiceSummary totalFareCalculator(Ride[] rides) {
-        double totalFare = 0;
-        for (Ride ride:rides ){
-            totalFare += this.fareCalculator(ride.distance, ride.time, ride.rideCategory);
-        }
+        double totalFare = Arrays.stream(rides).mapToDouble(ride -> this.fareCalculator
+                (ride.distance, ride.time, ride.rideCategory)).sum();
         return new InvoiceSummary(rides.length, totalFare);
     }
     /**
-     * loading user specific ride information in map.
+     * loading user specific ride information in map and checking user already exists or not.
      * @param userRides
      * @param user
      */
-    public void setUserSpecificInvoice(Ride[] userRides, String user) {
+    public void setUserSpecificInvoice(Ride[] userRides, String user) throws InvoiceGeneratorException {
+        if ((invoiceSummaryMap.containsKey(user))){
+            throw new InvoiceGeneratorException(InvoiceGeneratorException.ExceptionType.KEY_ALREADY_EXISTS,"UserID already exists");
+        }
         invoiceSummaryMap.put(user, this.totalFareCalculator(userRides));
     }
 
     /**
-     * return invoice summary of the particular userID
+     * checking if the map is empty.
+     * @param checkMap
+     * @throws InvoiceGeneratorException
+     */
+    private void checkEmpty(Map checkMap) throws InvoiceGeneratorException {
+        if(checkMap == null || checkMap.size() == 0){
+            throw new InvoiceGeneratorException(InvoiceGeneratorException.ExceptionType.EMPTY_MAP,"No Invoice to display");
+        }
+    }
+
+    /**
+     * return invoice summary of the particular userID and checking if user id not present.
      * @param userID
      * @return
      */
-
-        public InvoiceSummary getUserInvoiceSummary(String userID) {
-        return invoiceSummaryMap.get(userID);
+     public InvoiceSummary getUserInvoiceSummary(String userID) throws InvoiceGeneratorException {
+         checkEmpty(invoiceSummaryMap);
+         if (!(invoiceSummaryMap.containsKey(userID))){
+                throw new InvoiceGeneratorException(InvoiceGeneratorException.ExceptionType.NO_SUCH_KEY,"No such user Id present");
+         }
+         return invoiceSummaryMap.get(userID);
     }
 }
 
